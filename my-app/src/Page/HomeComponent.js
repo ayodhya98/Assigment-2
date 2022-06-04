@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import { useEffect, useState } from "react";
 import { db } from '../firebase-config';
 import { collection, addDoc, getDocs, deleteDoc, updateDoc, doc } from "firebase/firestore";
+import { getDatabase, ref, set } from "firebase/database";
 
 function HomeComponent() {
 
@@ -26,10 +27,7 @@ function HomeComponent() {
             From: from,
             Where: to,
             Id:id,
-            
-
-            
-        }).then(() => {
+            }).then(() => {
             alert("Record Successfully Added !");
             clearTexts();
         }).catch(() => {
@@ -52,6 +50,25 @@ function HomeComponent() {
             ...doc.data()
         })));
     }
+
+    function writeUserData(id, date,time,from,to) {
+        const db = getDatabase();
+        set(ref(db, 'user/' + id), {
+            Date:date,
+            Time: time,
+            From: from,
+            Where: to,
+            Id:id,
+        }).then(() => {
+            alert("Record Successfully Updated !");
+            clearTexts();
+        }).catch(() => {
+            alert("Record Updating Failed !")
+        });
+        
+        
+      }
+      
 
     const clearTexts = () => {
         setTime('');
@@ -98,7 +115,7 @@ function HomeComponent() {
                         
                         <button type="button" class="btn btn-success" onClick={addSchedule}>Save</button>
                         <button type="button" class="btn btn-warning" style={{ marginLeft: 10 }} onClick={deleteSchedule}>Delete</button>
-                        <button type="button" class="btn btn-info" style={{ marginLeft: 10 }} onClick={deleteSchedule}>Update</button>
+                        <button type="button" class="btn btn-info" style={{ marginLeft: 10 }} onClick={writeUserData}>Update</button>
                     </div>
                     <div className="col">
                         <table class="table">
